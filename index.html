@@ -913,17 +913,6 @@
             letter-spacing: 1px;
         }
 
-.music-control {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 9999;
-    background: rgba(26,22,37,0.7);
-    padding: 8px 12px;
-    border-radius: 12px;
-    color: white;
-    font-family: 'Crimson Pro', serif;
-}
 
         @media (max-width: 768px) {
             .countdown-title {
@@ -1025,10 +1014,7 @@
 	Im grateful for today, tomorrow & every day we'll share.<br> We will make our dreams come true together.<br> Seni çok seviyorum, happy valentine's day sevgilim...</p>
     </div>
 
-<div class="music-control">
-    🔊 <input type="range" id="volumeSlider" 
-        min="0" max="1" step="0.01" value="0.5">
-</div>
+
 
     <div class="container">
         <div class="grid">
@@ -1132,7 +1118,7 @@ I was so happy with the final product, I watched it for days & days..<br>.. also
                     <div class="lock-text">Click to unlock</div>
                 </div>
                 <video controls>
-                    <source src="elements/vid3.mov" type="video/mp4">
+                    <source src="elements/vid3.mp4" type="video/mp4">
                     Your browser doesn't support video.
                 </video>
                 <div class="polaroid-caption">Our happiest day.. <br><br>most calmest<br>most peaceful<br>most lovely</div>
@@ -1204,7 +1190,7 @@ I was so happy with the final product, I watched it for days & days..<br>.. also
                     <div class="lock-text">Click to unlock</div>
                 </div>
                 <video controls>
-                    <source src="elements/vid4.mov" type="video/mp4">
+                    <source src="elements/vid4.mp4" type="video/mp4">
                     Your browser doesn't support video.
                 </video>
                 <div class="polaroid-caption">Dancing & singing aşkım benim<br><br> tho the pomidor soup didnt help with your belly...<br>.. at least it was tasty :)</div>
@@ -1220,7 +1206,7 @@ I was so happy with the final product, I watched it for days & days..<br>.. also
                     <div class="lock-text">Click to unlock</div>
                 </div>
                 <video controls>
-                    <source src="elements/vid5.mov" type="video/mp4">
+                    <source src="elements/vid5.mp4" type="video/mp4">
                     Your browser doesn't support video.
                 </video>
                 <div class="polaroid-caption">I miss you aşkım. I miss my other piece. My sunshine. I love you</div>
@@ -1245,7 +1231,7 @@ I was so happy with the final product, I watched it for days & days..<br>.. also
                     <div class="lock-text">Click to unlock</div>
                 </div>
                 <video controls>
-                    <source src="elements/vid7.mov" type="video/mp4">
+                    <source src="elements/vid7.mp4" type="video/mp4">
                     Your browser doesn't support video.
                 </video>
                 <div class="polaroid-caption">I miss you aşkım. I miss my other piece. My sunshine. I love you</div>
@@ -1305,19 +1291,34 @@ I was so happy with the final product, I watched it for days & days..<br>.. also
                 document.removeEventListener('touchstart', playOnInteraction);
                 document.removeEventListener('keydown', playOnInteraction);
             };
-
-const volumeSlider = document.getElementById('volumeSlider');
-
-// default volume
-bgMusic.volume = volumeSlider.value;
-
-volumeSlider.addEventListener('input', () => {
-    bgMusic.volume = volumeSlider.value;
-});
             
             document.addEventListener('click', playOnInteraction);
             document.addEventListener('touchstart', playOnInteraction);
             document.addEventListener('keydown', playOnInteraction);
+        });
+
+        // ===== VIDEO AND BACKGROUND MUSIC COORDINATION =====
+        // Pause background music when video plays, resume when it ends
+        const allVideos = document.querySelectorAll('video');
+        
+        allVideos.forEach(video => {
+            // When video starts playing, pause background music
+            video.addEventListener('play', () => {
+                bgMusic.pause();
+            });
+            
+            // When video ends, resume background music
+            video.addEventListener('ended', () => {
+                bgMusic.play().catch(err => console.log('Could not resume music:', err));
+            });
+            
+            // When video is paused by user, resume background music
+            video.addEventListener('pause', () => {
+                // Only resume if the video hasn't ended (to avoid double-play)
+                if (!video.ended) {
+                    bgMusic.play().catch(err => console.log('Could not resume music:', err));
+                }
+            });
         });
 
         // ===== FLOATING HEARTS =====
